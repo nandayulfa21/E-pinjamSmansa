@@ -62,7 +62,10 @@
                 </a>
             </li>
             <li>
-                <a href="login.html" class="logout">
+                <form id="logout-form" action="{{ route('logout') }}" method="POST" style="display: none;">
+                    @csrf
+                </form>
+                <a href="#" class="logout" onclick="event.preventDefault(); document.getElementById('logout-form').submit();">
                     <i class='bx bxs-log-out-circle'></i>
                     <span class="text">Logout</span>
                 </a>
@@ -121,9 +124,12 @@
                         <!-- <span class="text">Form Pengajuan</span> -->
                         </a>
                     </div>
+
+                    
                     <table>
                         <thead>
                             <tr>
+                                <th>Tanggal Pengajuan</th>
                                 <th>Nama</th>
                                 <th>Jabatan</th>
                                 <th>Jenis Barang</th>
@@ -133,8 +139,12 @@
                                 <th>Keterangan</th>
                             </tr>
                         </thead>
+
+                        
+
                         <tbody>
                             <tr>
+                                <td> 28-10-2024</td>
                                 <td>Siapa Namanya</td>
                                 <td>Guru</td>
                                 <td>Jenis1</td>
@@ -144,6 +154,7 @@
                                 <td>deskripsi panjang</td>
                             </tr>
                             <tr>
+                                <td> 28-10-2024</td>
                                 <td>Siapa Namanya</td>
                                 <td>Guru</td>
                                 <td>Jenis1</td>
@@ -152,33 +163,7 @@
                                 <td>12.00</td>
                                 <td>deskripsi panjang</td>
                             </tr>
-                            <tr>
-                                <td>Siapa Namanya</td>
-                                <td>Guru</td>
-                                <td>Jenis1</td>
-                                <td>Merk**</td>
-                                <td>900</td>
-                                <td>12.00</td>
-                                <td>deskripsi panjang</td>
-                            </tr>
-                            <tr>
-                                <td>Siapa Namanya</td>
-                                <td>Guru</td>
-                                <td>Jenis1</td>
-                                <td>Merk**</td>
-                                <td>900</td>
-                                <td>12.00</td>
-                                <td>deskripsi panjang</td>
-                            </tr>
-                            <tr>
-                                <td>Siapa Namanya</td>
-                                <td>Guru</td>
-                                <td>Jenis1</td>
-                                <td>Merk**</td>
-                                <td>900</td>
-                                <td>12.00</td>
-                                <td>deskripsi panjang</td>
-                            </tr>
+                        
                         </tbody>
                     </table>
                 </div>

@@ -15,6 +15,7 @@ class CreatePengajuanTable extends Migration
     {
         Schema::create('pengajuan', function (Blueprint $table) {
             $table->id();
+            $table->date('tanggal_pengajuan')->default;
             $table->string('nama');
             $table->string('jabatan');
             $table->string('jenis_barang');

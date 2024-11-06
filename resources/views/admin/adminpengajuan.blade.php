@@ -4,24 +4,29 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
-    <!-- Boxicons -->
     <link href='https://unpkg.com/boxicons@2.0.9/css/boxicons.min.css' rel='stylesheet'>
-    <!-- My CSS -->
     <link rel="stylesheet" href="{{ asset('assets/admin.css') }}">
-
     <title>Pengajuan</title>
+    <style>
+        /* Tambahkan ini untuk mengubah warna tombol download */
+        .btn-download {
+            background-color: #007bff; /* button download*/
+            color: #fff; /* Warna teks putih */
+            border: none; /* Menghilangkan border */
+            padding: 10px 20px; /* Padding untuk tombol */
+            border-radius: 5px; /* Membuat sudut tombol melengkung */
+            cursor: pointer; /* Menunjukkan bahwa tombol dapat diklik */
+            transition: background-color 0.3s; /* Animasi perubahan warna */
+        }
+
+        .btn-download:hover {
+            background-color: #0056b3; /* Warna saat hover */
+        }
+    </style>
 </head>
 
 <body>
-
-
-    <!-- SIDEBAR -->
     <section id="sidebar">
-        <!-- <a href="#" class="brand">
-            <img src="https://scontent.fjog8-1.fna.fbcdn.net/v/t39.30808-6/348868961_1524281224646474_6510309172757669624_n.jpg?_nc_cat=103&ccb=1-7&_nc_sid=6ee11a&_nc_ohc=rtrtcrCtOb4Q7kNvgHtWnos&_nc_ht=scontent.fjog8-1.fna&_nc_gid=Ad-Z6TmaIl9RycO4hoXUqkH&oh=00_AYDojjWSFui8ZR2SaltH2git5SyhO49V1_MTQ-zIA5LtwA&oe=66E97E28" alt="Logo SMAN 1 Sleman" class="logo-smansa">
-            <span class="text">SMA N 1 SLEMAN</span>
-        </a> -->
         <a href="#" class="brand">
             <i class='bx bxs-smile'></i>
             <span class="text">SMA N 1 SLEMAN</span>
@@ -72,78 +77,74 @@
                 </a>
             </li>
             <li>
-                <a href="#" class="logout">
+                <form id="logout-form" action="{{ route('logout') }}" method="POST" style="display: none;">
+                    @csrf
+                </form>
+                <a href="#" class="logout" onclick="event.preventDefault(); document.getElementById('logout-form').submit();">
                     <i class='bx bxs-log-out-circle'></i>
                     <span class="text">Logout</span>
                 </a>
             </li>
         </ul>
     </section>
-    <!-- SIDEBAR -->
 
-
-
-    <!-- CONTENT -->
     <section id="content">
-        <!-- NAVBAR -->
         <nav>
             <i class='bx bx-menu'></i>
             <a href="#" class="nav-link">Kategori</a>
             <form action="#">
-                <div class="form-input">
-                    <input type="search" placeholder="Search...">
-                    <button type="submit" class="search-btn"><i class='bx bx-search'></i></button>
-                </div>
+                <!-- Optional search form can be added here -->
             </form>
             <input type="checkbox" id="switch-mode" hidden>
             <label for="switch-mode" class="switch-mode"></label>
-            <a href="#" class="notification">
-                <i class='bx bxs-bell'></i>
-                <span class="num">8</span>
-            </a>
             <a href="#" class="profile">
                 <img src="img/people.png">
             </a>
         </nav>
-        <!-- NAVBAR -->
 
-        <!-- MAIN -->
         <main>
             <div class="head-title">
                 <div class="left">
                     <h1>Data Pengajuan</h1>
                     <ul class="breadcrumb">
-                        <li>
-                            <a href="#">Beranda</a>
-                        </li>
+                        <li><a href="#">Beranda</a></li>
                         <li><i class='bx bx-chevron-right'></i></li>
-                        <li>
-                            <a class="active" href="#">Data Pengajuan</a>
-                        </li>
+                        <li><a class="active" href="#">Data Pengajuan</a></li>
                     </ul>
                 </div>
-               <!-- <a href="#" class="btn-download">
-                    <i class='bx bxs-cloud-download'></i>
-                    <span class="text">Download Exel</span>
-                </a> -->
 
-                <a href="{{ route('export.pengajuan') }}" class="btn-download">
-                    <i class='bx bxs-cloud-download'></i>
-                    <span class="text">Download Excel</span>
-                </a>
 
+                {{-- tombol download exel --}}
+               <form action="{{ route('export.pengajuan') }}" method="GET" id="download-form">
+                    <input type="hidden" id="hidden-start-date" name="start_date">
+                    <input type="hidden" id="hidden-end-date" name="end_date">
+                    <button type="submit" class="btn-download" id="download-btn">
+                        <i class='bx bxs-cloud-download'></i>
+                        <span class="text">Download Excel</span>
+                    </button>
+                </form>
             </div>
 
+
+            {{-- filter(berdasarkan tanggal) --}}
             <div class="table-data">
                 <div class="order">
                     <div class="head">
                         <h3>Tabel Pengajuan</h3>
-                        <i class='bx bx-search'></i>
-                        <i class='bx bx-filter'></i>
+                        <label for="start_date">Tanggal Mulai:</label>
+                        <input type="date" id="tanggal_mulai" name="start_date">
+                        
+                        <label for="end_date">Tanggal Selesai:</label>
+                        <input type="date" id="tanggal_selesai" name="end_date">
+                        
+                        <button id="filter-btn">Filter</button>
                     </div>
+
+
                     <table>
                         <thead>
                             <tr>
+                                <th>Tanggal Pengajuan</th>
                                 <th>Nama</th>
                                 <th>Jabatan</th>
                                 <th>Jenis Barang</th>
@@ -153,9 +154,10 @@
                                 <th>Keterangan</th>
                             </tr>
                         </thead>
-                        <tbody>
-                            @foreach ($data as $key => $value) 
+                        <tbody id="data-body">
+                            @foreach ($data as $value) 
                             <tr>
+                                <td>{{ $value->tanggal_pengajuan }}</td>  
                                 <td>{{ $value->nama }}</td>
                                 <td>{{ $value->jabatan }}</td>
                                 <td>{{ $value->jenis_barang }}</td>
@@ -165,83 +167,33 @@
                                 <td>{{ $value->keterangan }}</td>
                             </tr>
                             @endforeach
-                            <tr>
-                                <td>Siapa Namanya</td>
-                                <td>Guru</td>
-                                <td>Jenis1</td>
-                                <td>Merk**</td>
-                                <td>900</td>
-                                <td>12.00</td>
-                                <td>deskripsi panjang</td>
-                            </tr>
-                            <tr>
-                                <td>Siapa Namanya</td>
-                                <td>Guru</td>
-                                <td>Jenis1</td>
-                                <td>Merk**</td>
-                                <td>900</td>
-                                <td>12.00</td>
-                                <td>deskripsi panjang</td>
-                            </tr>
-                            <tr>
-                                <td>Siapa Namanya</td>
-                                <td>Guru</td>
-                                <td>Jenis1</td>
-                                <td>Merk**</td>
-                                <td>900</td>
-                                <td>12.00</td>
-                                <td>deskripsi panjang</td>
-                            </tr>
-                            <tr>
-                                <td>Siapa Namanya</td>
-                                <td>Guru</td>
-                                <td>Jenis1</td>
-                                <td>Merk**</td>
-                                <td>900</td>
-                                <td>12.00</td>
-                                <td>deskripsi panjang</td>
-                            </tr>
                         </tbody>
                     </table>
                 </div>
-                <!-- <div class="todo">
-					<div class="head">
-						<h3>Todos</h3>
-						<i class='bx bx-plus' ></i>
-						<i class='bx bx-filter' ></i>
-					</div>
-                    
-					<ul class="todo-list">
-						<li class="completed">
-							<p>Todo List</p>
-							<i class='bx bx-dots-vertical-rounded' ></i>
-						</li>
-						<li class="completed">
-							<p>Todo List</p>
-							<i class='bx bx-dots-vertical-rounded' ></i>
-						</li>
-						<li class="not-completed">
-							<p>Todo List</p>
-							<i class='bx bx-dots-vertical-rounded' ></i>
-						</li>
-						<li class="completed">
-							<p>Todo List</p>
-							<i class='bx bx-dots-vertical-rounded' ></i>
-						</li>
-						<li class="not-completed">
-							<p>Todo List</p>
-							<i class='bx bx-dots-vertical-rounded' ></i>
-						</li>
-					</ul>
-				</div>
-			</div>
-		</main> -->
-                <!-- MAIN -->
+            </div>
+        </main>
     </section>
-    <!-- CONTENT -->
-
 
     <script src="{{ asset('assets/script.js') }}"></script>
-</body>
 
+    
+    <script>
+        document.getElementById('filter-btn').addEventListener('click', function() {
+            const startDate = document.getElementById('tanggal_mulai').value;
+            const endDate = document.getElementById('tanggal_selesai').value;
+            const rows = document.querySelectorAll('#data-body tr');
+        
+            rows.forEach(row => {
+                const rowDate = row.children[0].innerText; // Mengambil tanggal dari kolom pertama
+
+                // Tampilkan atau sembunyikan baris berdasarkan filter
+                row.style.display = (rowDate >= startDate && rowDate <= endDate) ? '' : 'none';
+            });
+
+            // Set tanggal di form download
+            document.getElementById('hidden-start-date').value = startDate;
+            document.getElementById('hidden-end-date').value = endDate;
+        });
+    </script>
+</body>
 </html>

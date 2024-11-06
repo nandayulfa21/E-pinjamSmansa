@@ -1,8 +1,8 @@
 <?php
 
 namespace App\Http\Controllers;
-use App\Models\Pengajuan;
 
+use App\Models\Pengajuan;
 use Illuminate\Http\Request;
 
 class UserPengajuanController extends Controller
@@ -17,21 +17,25 @@ class UserPengajuanController extends Controller
         return view('user.userformpengajuan');
     }
 
-        public function store(Request $request)
-        {
-            // Validasi input
-            $request->validate([
-                'nama' => 'required|string|max:255',
-                'jabatan' => 'required|string|max:255',
-                'jenis_barang' => 'required|string|max:255',
-                'merk_spesifikasi' => 'required|string|max:255',
-                'jumlah' => 'required|integer|min:1',
-                'satuan_barang' => 'required|string|max:255',
-                'keterangan' => 'nullable|string|max:500',
-            ]);
-    
-            // Buat pengajuan baru dan simpan
+    public function store(Request $request)
+    {
+        // Validasi input
+        $request->validate([
+            'tanggal_pengajuan' => 'required|date',
+            'nama' => 'required|string|max:255',
+            'jabatan' => 'required|string|max:255',
+            'jenis_barang' => 'required|string|max:255',
+            'merk_spesifikasi' => 'required|string|max:255',
+            'jumlah' => 'required|integer|min:1',
+            'satuan_barang' => 'required|string|max:255',
+            'keterangan' => 'nullable|string|max:500',
+        ]);
+
+        
+        try {
+            // Simpan pengajuan baru ke database
             Pengajuan::create([
+                'tanggal_pengajuan' => $request->input('tanggal_pengajuan'),
                 'nama' => $request->input('nama'),
                 'jabatan' => $request->input('jabatan'),
                 'jenis_barang' => $request->input('jenis_barang'),
@@ -41,22 +45,18 @@ class UserPengajuanController extends Controller
                 'keterangan' => $request->input('keterangan'),
             ]);
 
-        
-    
+            // Kembalikan response JSON jika berhasil
+            return response()->json([
+                'success' => true,
+                'message' => 'Pengajuan berhasil disimpan!'
+            ], 200);
 
-            // Simpan data ke database
-            $pengajuan = new Pengajuan();
-            $pengajuan->nama = $request->nama;
-            $pengajuan->jenis_barang = $request->jenis_barang;
-            $pengajuan->satuan_barang = $request->satuan_barang;
-            $pengajuan->jabatan = $request->jabatan;
-            $pengajuan->spesifikasi = $request->spesifikasi;
-            $pengajuan->keperluan = $request->keperluan;
-            $pengajuan->save();
-
-            return redirect()->route('userpengajuan.index')->with('success', 'Data berhasil disimpan');
+        } catch (\Exception $e) {
+            // Kembalikan response JSON jika terjadi error
+            return response()->json([
+                'success' => false,
+                'message' => 'Terjadi kesalahan: ' . $e->getMessage()
+            ], 500);
         }
-
     }
-
-
+}

@@ -14,6 +14,14 @@ class Pengajuan extends Model
 
     // Tentukan kolom yang dapat diisi secara massal
     protected $fillable = [
+        //'nama',           // Nama peminjam
+        //'jenis_barang',   // Jenis barang yang diajukan
+       // 'satuan_barang',  // Satuan barang (misal: unit, buah, dll)
+       // 'jabatan',        // Jabatan peminjam (misal: Guru, Siswa, dll)
+       // 'merk_spesifikasi', // Merk atau spesifikasi barang
+       // 'keperluan'      // Keterangan tambahan
+       // 'jumlah',         // Jumlah barang yang diajukan
+        'tanggal_pengajuan',
         'nama',           // Nama peminjam
         'jabatan',        // Jabatan peminjam (misal: Guru, Siswa, dll)
         'jenis_barang',   // Jenis barang yang diajukan
